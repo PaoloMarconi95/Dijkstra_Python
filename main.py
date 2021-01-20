@@ -14,6 +14,7 @@ def main():
         node.print_path()
 
 
+# Custom preparation of the graph. Future release will allow graphic interface
 def prepare_graph():
     nodes = [0, 1, 2, 3, 4, 5]
     for node in nodes:
@@ -34,19 +35,23 @@ def dijkstra(nodes):
     for node in nodes:
         if debug:
             print("Node " + str(node.id))
-        for neighbour in node.neighbour:
+        for current_neighbour in node.neighbour:
             if node.current_value > 0:
-                possible = node.current_value + weight_matrix[node.id][neighbour.id]
-                if (possible < neighbour.current_value) | (neighbour.current_value == -1):
-                    neighbour.current_value = possible
+                possible = node.current_value + weight_matrix[node.id][current_neighbour.id]
+                if (possible < current_neighbour.current_value) | (current_neighbour.current_value == -1):
+                    current_neighbour.current_value = possible
+                    new_optimus = node.optimus_path
+                    new_optimus.append(node.id)
+                    current_neighbour.optimus_path = new_optimus
                     if debug:
                         print("Found new minimum of " + str(possible)
-                              + " with neighbour " + str(neighbour.id))
+                              + " with neighbour " + str(current_neighbour.id))
             else:
                 # we're on 1st node
-                neighbour.current_value = weight_matrix[node.id][neighbour.id]
+                current_neighbour.current_value = weight_matrix[node.id][current_neighbour.id]
+                current_neighbour.optimus_path.append(node.id)
                 if debug:
-                    print("Found new minimum of " + str(weight_matrix[node.id][neighbour.id]))
+                    print("Found new minimum of " + str(weight_matrix[node.id][current_neighbour.id]))
         node.completed = True
         node.remove_from_neighbour()
         if debug:
