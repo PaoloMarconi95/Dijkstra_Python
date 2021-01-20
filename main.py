@@ -9,7 +9,7 @@ debug = False
 
 def main():
     nodes = prepare_graph()
-    dijkstra(nodes)
+    dijkstra(nodes=nodes, start=3)
     for node in nodes:
         node.print_path()
 
@@ -35,7 +35,17 @@ def prepare_graph():
     return nodes
 
 
-def dijkstra(nodes):
+def dijkstra_helper(nodes, start):
+    for node in nodes:
+        if node.id == start:
+            start_node = node
+            nodes.remove(node)
+            nodes.insert(0, start_node)
+
+
+def dijkstra(nodes, start=None):
+    if start is not None:
+        dijkstra_helper(nodes, start)
     for node in nodes:
         if debug:
             print("Node " + str(node.id))
