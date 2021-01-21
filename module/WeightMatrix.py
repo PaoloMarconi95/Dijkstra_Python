@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class WeightMatrix:
 
     def __init__(self, n_nodes):
