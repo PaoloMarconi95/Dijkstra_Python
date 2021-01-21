@@ -1,22 +1,21 @@
-import numpy as np
-from Node import Node
+from module.WeightMatrix import WeightMatrix
+from module.Node import Node
 
-number_of_nodes = 6
-weight_matrix = np.zeros((number_of_nodes, number_of_nodes))
 undirected_graph = True
 debug = False
 
 
 def main():
-    nodes = prepare_graph()
-    dijkstra(nodes=nodes, start=3)
-    for node in nodes:
-        node.print_path()
+    print("Main")
+    # nodes = prepare_graph()
+    # dijkstra(nodes=nodes, start=3, finish=2)
 
 
 # Custom preparation of the graph. Future release will allow graphic interface
 def prepare_graph():
     nodes = [0, 1, 2, 3, 4, 5]
+    weight_matrix = WeightMatrix(len(nodes))
+    weight_matrix = weight_matrix.matrix
 
     for node in nodes:
         nodes[node] = Node(node)
@@ -35,7 +34,7 @@ def prepare_graph():
     return nodes
 
 
-def dijkstra_helper(nodes, start):
+def dijkstra_with_start(nodes, start):
     for node in nodes:
         if node.id == start:
             start_node = node
@@ -43,30 +42,45 @@ def dijkstra_helper(nodes, start):
             nodes.insert(0, start_node)
 
 
-def dijkstra(nodes, start=None):
+def dijkstra(nodes, weight_matrix, start=None, finish=None):
     if start is not None:
-        dijkstra_helper(nodes, start)
+        dijkstra_with_start(nodes, start)
+    apply_dijkstra(nodes, weight_matrix)
+    if finish is None:
+        for node in nodes:
+            node.print_path()
+    else:
+        for node in nodes:
+            if node.id == finish:
+                # print("printing the result")
+                # print(node.optimal_path)
+                # print(node.current_value)
+                return node.current_value
+
+
+def apply_dijkstra(nodes, weight_matrix):
     for node in nodes:
         if debug:
             print("Node " + str(node.id))
         for current_neighbour in node.neighbour:
-            if node.current_value > 0:
+            if node.current_value is not None:
                 possible = node.current_value + weight_matrix[node.id][current_neighbour.id]
-                if (possible < current_neighbour.current_value) | (current_neighbour.current_value == -1):
+                if (current_neighbour.current_value is None) or (possible < current_neighbour.current_value):
                     current_neighbour.current_value = possible
-                    new_optimus = node.optimus_path.copy()
+                    new_optimus = node.optimal_path.copy()
                     new_optimus.append(current_neighbour.id)
-                    current_neighbour.optimus_path = new_optimus
+                    current_neighbour.optimal_path = new_optimus
                     if debug:
                         print("Found new minimum of " + str(possible)
                               + " with neighbour " + str(current_neighbour.id))
             else:
                 # we're on 1st node
                 current_neighbour.current_value = weight_matrix[node.id][current_neighbour.id]
-                current_neighbour.optimus_path.append(node.id)
-                current_neighbour.optimus_path.append(current_neighbour.id)
+                current_neighbour.optimal_path.append(node.id)
+                current_neighbour.optimal_path.append(current_neighbour.id)
                 if debug:
-                    print("Found new minimum of " + str(weight_matrix[node.id][current_neighbour.id]))
+                    print("Found new minimum of " + str(weight_matrix[node.id][current_neighbour.id])
+                          + " with neighbour " + str(current_neighbour.id))
         node.completed = True
         node.remove_from_neighbour()
         if debug:

@@ -1,14 +1,14 @@
 class Node:
-    def __init__(self, id, neighbour=None, completed=False, optimus_path=None, current_value=-1):
+    def __init__(self, id, neighbour=None, completed=False, optimal_path=None, current_value=None):
         if neighbour is None:
             neighbour = []
-        if optimus_path is None:
-            optimus_path = []
+        if optimal_path is None:
+            optimal_path = []
         self.id = id
         self.neighbour = neighbour
         self.completed = completed
         self.current_value = current_value
-        self.optimus_path = optimus_path
+        self.optimal_path = optimal_path
 
     def add_neighbour(self, new_neighbour, weight, weight_matrix, undirected_graph):
         self.neighbour.append(new_neighbour)
@@ -38,5 +38,5 @@ class Node:
     def print_path(self):
         print('Current Node : ' + str(self.id) +
               '\nPath : ' + str(self.current_value) +
-              '\nOptimus Path: ' + str(self.optimus_path))
+              '\nOptimal Path: ' + str(self.optimal_path))
         print("\n")
