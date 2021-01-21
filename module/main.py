@@ -24,11 +24,13 @@ def dijkstra(nodes, weight_matrix, start=None, finish=None):
 
 
 def apply_dijkstra(starting_node, weight_matrix):
-    next_node = None
+    next_nodes = []
     current_node = starting_node
+    if debug:
+        print("analyzing node " + str(current_node.id))
     for neighbour in current_node.neighbour:
         if not neighbour.completed:
-            next_node = neighbour
+            next_nodes.append(neighbour)
             # Inserted Here
             if current_node.current_value is not None:
                 possible = current_node.current_value + weight_matrix[current_node.id][neighbour.id]
@@ -60,5 +62,5 @@ def apply_dijkstra(starting_node, weight_matrix):
             # End inserted here
     current_node.completed = True
     # node.remove_from_neighbour()
-    if next_node is not None:
-        apply_dijkstra(next_node, weight_matrix)
+    for neigh in next_nodes:
+        apply_dijkstra(neigh, weight_matrix)
