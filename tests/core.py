@@ -25,4 +25,4 @@ class TestDijkstra(unittest.TestCase):
         nodes[0].add_neighbour(nodes[2], 2, weight_matrix, True)
         nodes[1].add_neighbour(nodes[2], 5, weight_matrix, True)
         nodes[2].add_neighbour(nodes[3], 1, weight_matrix, True)
-        self.assertEqual(main.dijkstra(nodes, weight_matrix, 0, 3), 3)
+        self.assertEqual(main.dijkstra(nodes, weight_matrix, 3, 0), 3)
