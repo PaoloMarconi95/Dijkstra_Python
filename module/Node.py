@@ -10,16 +10,8 @@ class Node:
         self.current_value = current_value
         self.optimal_path = optimal_path
 
-    def add_neighbour(self, new_neighbour, weight, weight_matrix, undirected_graph):
+    def add_neighbour(self, new_neighbour):
         self.neighbour.append(new_neighbour)
-        weight_matrix[self.id][new_neighbour.id] = weight
-        if undirected_graph:
-            new_neighbour.add_neighbour_redundant(new_neighbour=self, weight=weight,
-                                                  weight_matrix=weight_matrix)
-
-    def add_neighbour_redundant(self, new_neighbour, weight, weight_matrix):
-        self.neighbour.append(new_neighbour)
-        weight_matrix[self.id][new_neighbour.id] = weight
 
     def remove_from_neighbour(self):
         for neig in self.neighbour:

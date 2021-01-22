@@ -6,20 +6,15 @@ debug = False
 
 # Custom preparation of the graph. Future release will allow graphic interface
 
-
-def dijkstra(nodes, weight_matrix, start=None, finish=None):
-    if start is None:
-        apply_dijkstra(nodes[0], weight_matrix)
-    else:
-        apply_dijkstra(nodes[start], weight_matrix)
-    if finish is None:
-        for node in nodes:
+def dijkstra(graph, start_id, finish_id=None):
+    apply_dijkstra(graph.nodes[start_id], graph.weight_matrix)
+    if finish_id is None:
+        for node in graph.nodes:
             node.print_path()
     else:
-        for node in nodes:
-            if node.id == finish:
+        for node in graph.nodes:
+            if node.id == finish_id:
                 print(node.optimal_path)
-                # print(node.current_value)
                 return node.current_value
 
 
@@ -31,22 +26,20 @@ def apply_dijkstra(starting_node, weight_matrix):
     for neighbour in current_node.neighbour:
         if not neighbour.completed:
             next_nodes.append(neighbour)
-            # Inserted Here
             if current_node.current_value is not None:
                 possible = current_node.current_value + weight_matrix[current_node.id][neighbour.id]
+                new_optimal_possible = [*current_node.optimal_path, neighbour.id]
+                # If the neighbour of the current node has never been visited before
                 if neighbour.current_value is None:
                     neighbour.current_value = possible
-                    neighbour.optimal_path = current_node.optimal_path.copy()
-                    neighbour.optimal_path.append(neighbour.id)
-                if possible <= neighbour.current_value:
-                    new_optimal = current_node.optimal_path.copy()
-                    new_optimal.append(neighbour.id)
+                    neighbour.optimal_path = new_optimal_possible
+                elif possible <= neighbour.current_value:
                     # save new path just if it's shorter, giving that we have the same value for the path
                     if possible == neighbour.current_value:
-                        if len(new_optimal) < len(neighbour.optimal_path):
-                            neighbour.optimal_path = new_optimal
+                        if len(new_optimal_possible) < len(neighbour.optimal_path):
+                            neighbour.optimal_path = new_optimal_possible
                     else:
-                        neighbour.optimal_path = new_optimal
+                        neighbour.optimal_path = new_optimal_possible
                     neighbour.current_value = possible
                     if debug:
                         print("Found new minimum of " + str(possible) + " with neighbour " + str(neighbour.id))
@@ -58,9 +51,6 @@ def apply_dijkstra(starting_node, weight_matrix):
                 if debug:
                     print("Found new minimum of " + str(weight_matrix[current_node.id][neighbour.id])
                           + " with neighbour " + str(neighbour.id))
-            # compute dijkstra
-            # End inserted here
     current_node.completed = True
-    # node.remove_from_neighbour()
     for neigh in next_nodes:
         apply_dijkstra(neigh, weight_matrix)
