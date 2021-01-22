@@ -1,6 +1,5 @@
-# Setting main parameter
+# Setting debug parameter
 
-undirected_graph = True
 debug = False
 
 
@@ -12,9 +11,16 @@ def dijkstra(graph, start_id, finish_id=None):
         for node in graph.nodes:
             node.print_path()
     else:
+        if finish_id == start_id:
+            return 0
         for node in graph.nodes:
             if node.id == finish_id:
-                print(node.optimal_path)
+                if debug:
+                    print("Solution:\nOptimal path:")
+                    print(node.optimal_path)
+                    print("Value: " + str(node.current_value))
+                else:
+                    print(node.optimal_path)
                 return node.current_value
 
 
